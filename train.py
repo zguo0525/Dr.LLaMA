@@ -29,6 +29,8 @@ def parse_args():
                         help='Task ID (1 to num-tasks)')
     parser.add_argument('--num-tasks', type=int, required=True,
                         help='Number of tasks')
+    parser.add_argument('--model-name', type=str, required=True,
+                        help='Pretrained model name or path')
     parser.add_argument('--model-dir', type=str, required=True,
                         help='Path to the PeftModel directory')
     parser.add_argument('--data-file', type=str, required=True,
@@ -51,6 +53,8 @@ def parse_args():
                         help='Random seed')
     parser.add_argument('--log-interval', type=int, default=100,
                         help='Log interval')
+    parser.add_argument('--epochs', type=int, default=100,
+                        help='Number of training epochs')
     return parser.parse_args()
 
 def set_seed(seed):
@@ -114,7 +118,7 @@ def train(model, tokenizer, dataset_dict, args):
     set_seed(args.seed)
     scaler = GradScaler()
 
-    for epoch in range(100):
+    for epoch in range(args.epochs):
         for step, batch in enumerate(tqdm(train_dataloader)):
             model.train()
             input_ids = batch['input_ids'].to(args.device)
