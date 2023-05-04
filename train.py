@@ -82,3 +82,77 @@ def load_model(model_dir, alpha, device):
     base_model_name_or_path = config.base_model_name_or_path
     tokenizer = AutoTokenizer.from_pretrained(base_model_name_or_path, padding_side='left')
     model = Auto
+    
+def load_model(model_dir, alpha, device):
+    config = PeftConfig.from_pretrained(model_dir)
+    base_model_name_or_path = config.base_model_name_or_path
+    tokenizer = AutoTokenizer.from_pretrained(base_model_name_or_path, padding_side='left')
+    model = AutoModelForCausalLM.from_pretrained(model_dir)
+    model = PeftModel(model, config, alpha=alpha)
+    model.to(device)
+    return model, tokenizer
+
+def train(model, tokenizer, dataset_dict, args):
+    train_dataset = dataset_dict['train'].map(preprocess_function, batched=True, remove_columns=['question', 'context', 'long_answer'])
+    eval_dataset = dataset_dict['valid'].map(preprocess_function, batched=True, remove_columns=['question', 'context', 'long_answer'])
+
+    train_dataset = train_dataset.map(lambda x: tokenizer(x['input_ids'], padding='max_length', truncation=True, max_length=args.max_length), batched=True)
+    eval_dataset = eval_dataset.map(lambda x: tokenizer(x['input_ids'], padding='max_length', truncation=True, max_length=args.max_length), batched=True)
+
+    train_sampler = RandomSampler(train_dataset)
+    train_dataloader = DataLoader(train_dataset, sampler=train_sampler, batch_size=args.batch_size, collate_fn=default_data_collator)
+
+    eval_dataloader = DataLoader(eval_dataset, batch_size=args.batch_size, collate_fn=default_data_collator)
+
+    optimizer = torch.optim.AdamW(model.parameters(), lr=5e-5)
+    lr_scheduler = get_linear_schedule_with_warmup(
+        optimizer=optimizer,
+        num_warmup_steps=10,
+        num_training_steps=1000,
+    )
+    model.zero_grad()
+    set_seed(args.seed)
+    scaler = GradScaler()
+
+    for epoch in range(100):
+        for step, batch in enumerate(tqdm(train_dataloader)):
+            model.train()
+            input_ids = batch['input_ids'].to(args.device)
+            attention_mask = batch['attention_mask'].to(args.device)
+            with autocast():
+                outputs = model(input_ids, attention_mask=attention_mask, labels=input_ids)
+                loss = outputs.loss / args.batch_size
+            scaler.scale(loss).backward()
+            scaler.step(optimizer)
+            scaler.update()
+            lr_scheduler.step()
+            model.zero_grad()
+            if step % args.log_interval == 0:
+                logger.info(f'Epoch {epoch}, Step {step}, Loss {loss.item():.4f}')
+                logger.info('Generating examples:')
+                generate_examples(model, tokenizer, eval_dataloader, args)
+
+def generate_examples(model, tokenizer, dataloader, args):
+    model.eval()
+    generator = pipeline('text-generation', model=model, tokenizer=tokenizer, device=args.device)
+    logits_processor = LogitsProcessorList([
+        TemperatureLogitsWarper(temperature=1.0),
+        RepetitionPenaltyLogitsProcessor(1.2)
+    ])
+    for batch in dataloader:
+        input_ids = batch['input_ids'].to(args.device)
+        generated_text = generator(input_ids=input_ids,
+                                   max_length=args.max_length,
+                                   min_length=args.min_length,
+                                   num_beams=args.num_beams,
+                                   logits_processor=logits_processor,
+                                   return_tensors='pt')
+        generated_text = tokenizer.batch_decode(generated_text['input_ids'], skip_special_tokens=True)
+        logger.info(generated_text)
+
+if __name__ == '__main__':
+    args = parse_args()
+    dataset_dict = load_data(args.data_file)
+    model, tokenizer = load_model(args.model_dir, args.alpha, args.device)
+    train(model, tokenizer, dataset_dict, args)
+
