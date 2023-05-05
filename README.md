@@ -1,6 +1,4 @@
-# Project Title
-
-Dr. Llama: Improving Small Language Models Through Generative Data Augmentation
+# Dr. Llama: Improving Small Language Models Through Generative Data Augmentation
 
 This repository contains the code, data, and resources related to our project titled "Dr. Llama: Improving Small Language Models Through Generative Data Augmentation."
 
