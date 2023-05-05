@@ -1,4 +1,4 @@
-# Project Title
+## Project Title
 
 Project Title is a short description of the project. In this repository, you can find the code, data, and resources related to our paper Paper Title, authored by Zhen Guo, Yanwei Wang, Peiqi Wang, and Shangdi Yu.
 
