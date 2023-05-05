@@ -1,17 +1,22 @@
-Sure, here is the README file that you can copy for your project:
-
 # Project Title
 
-The project title is a brief description of the project. This repository contains the code, data, and resources related to our paper titled "Paper Title," which was authored by Zhen Guo, Yanwei Wang, Peiqi Wang, and Shangdi Yu.
+Dr. Llama: Improving Small Language Models Through Generative Data Augmentation
+
+This repository contains the code, data, and resources related to our project titled "Dr. Llama: Improving Small Language Models Through Generative Data Augmentation."
 
 ## Table of Contents
 
+* [Introduction](#introduction)
 * [Installation](#installation)
 * [Usage](#usage)
 * [Contributing](#contributing)
 * [Citation](#citation)
 * [License](#license)
 * [Contact](#contact)
+
+## Introduction
+
+In this project, we aim to improve the performance of small language models (SLMs) through the use of generative data augmentation. Specifically, we introduce Dr. Llama, a framework for generating new training data to improve the accuracy of SLMs on various natural language processing tasks. Our approach involves training a large language model (LLM) on a large corpus of text data and then using this model to generate new training examples that are similar in style and structure to the original data. We evaluate our approach on several NLP datasets and demonstrate that Dr. Llama can improve the performance of SLMs on a range of tasks.
 
 ## Installation
 
@@ -27,12 +32,12 @@ Contributions to the project are always welcome! Please read the [contributing g
 
 ## Citation
 
-If you find this project or paper helpful for your research, please cite our paper using the following bibtex entry:
+If you find this project helpful for your research, please cite our work using the following bibtex entry:
 
 ```
-@inproceedings{author2023paper,
-title={Title of Your Paper},
-author={Guo, Zhen and Wang, Yanwei and Wang, Peiqi and Yu, Shangdi},
+@inproceedings{authorlastname2023drllama,
+title={Dr. Llama: Improving Small Language Models Through Generative Data Augmentation},
+author={[Author Name 1] and [Author Name 2] and [Author Name 3]},
 booktitle={Conference or Journal Name},
 year={2023}
 }
