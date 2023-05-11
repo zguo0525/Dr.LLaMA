@@ -33,10 +33,10 @@ Contributions to the project are always welcome! Please read the [contributing g
 If you find this project helpful for your research, please cite our work using the following bibtex entry:
 
 ```
-@inproceedings{authorlastname2023drllama,
-title={Dr. Llama: Improving Small Language Models Through Generative Data Augmentation},
-author={[Author Name 1] and [Author Name 2] and [Author Name 3]},
-booktitle={Conference or Journal Name},
+@inproceedings{2023drllama,
+title={Dr. Llama: Improving Small Language Models in Domain-Specific QA via Generative Data Augmentation},
+author={[Zhen Guo] and [Peiqi Wang] and [Yanwei Wang] and [Shangdi Yu]},
+url={https://github.com/zguo0525/Dr.llama}
 year={2023}
 }
 ```
