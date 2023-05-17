@@ -34,7 +34,7 @@ If you find this project helpful for your research, please cite our work using t
 
 ```
 @inproceedings{2023drllama,
-title={Dr. Llama: Improving Small Language Models in Domain-Specific QA via Generative Data Augmentation},
+title={Dr. LLaMA: Improving Small Language Models in Domain-Specific QA via Generative Data Augmentation},
 author={[Zhen Guo] and [Peiqi Wang] and [Yanwei Wang] and [Shangdi Yu]},
 url={https://github.com/zguo0525/Dr.llama}
 year={2023}
